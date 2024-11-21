@@ -2,6 +2,10 @@ import { Injectable, Inject, forwardRef } from "@nestjs/common";
 import { GetUsersParamDto } from "../dtos/get-users-param.dto";
 import { AuthService } from "src/auth/providers/auth.service";
 
+/**
+ * Class to connect to Users table and perform business operation
+ */
+
 @Injectable()
 export class UsersService {
     constructor(
@@ -9,12 +13,13 @@ export class UsersService {
         public readonly authService:AuthService,
     ){}
 
+    /**
+     * The method to get all users from the database
+     */
     public findAll(getUsersParamDto: GetUsersParamDto, limit: number, page: number
     ){
     const isAuth = this.authService.isAuth();
     console.log(isAuth);
-    
-        //AuthService
         return [
             {
                 firstName: "John",
@@ -27,7 +32,9 @@ export class UsersService {
         ]
     }
 
-    // Find a user by ID
+    /**
+     * Find a user by ID
+     */
     public findOnebyId(id:string){
         return {
             id: 1234,
