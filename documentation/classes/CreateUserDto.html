@@ -150,6 +150,7 @@
                                     <span class="modifier"></span>
                                     <span class="modifier"></span>
                                     <span class="modifier"></span>
+                                    <span class="modifier"></span>
                                 <a href="#email" >email</a>
                             </li>
                             <li>
@@ -167,6 +168,7 @@
                                 <a href="#lastName" >lastName</a>
                             </li>
                             <li>
+                                    <span class="modifier"></span>
                                     <span class="modifier"></span>
                                     <span class="modifier"></span>
                                     <span class="modifier"></span>
@@ -201,6 +203,7 @@
                             <span class="modifier"></span>
                             <span class="modifier"></span>
                             <span class="modifier"></span>
+                            <span class="modifier"></span>
                         <span ><b>email</b></span>
                         <a href="#email"><span class="icon ion-ios-link"></span></a>
                     </span>
@@ -217,7 +220,7 @@
                         <b>Decorators : </b>
                         <br />
                         <code>
-                            @IsString()<br />@IsNotEmpty()<br />@IsEmail()<br />
+                            @IsString()<br />@IsNotEmpty()<br />@IsEmail()<br />@MaxLength(96)<br />
                         </code>
                     </td>
                 </tr>
@@ -256,7 +259,7 @@
                         <b>Decorators : </b>
                         <br />
                         <code>
-                            @IsString()<br />@IsNotEmpty()<br />@MinLength(3)<br />@MaxLength(93)<br />
+                            @IsString()<br />@IsNotEmpty()<br />@MinLength(3)<br />@MaxLength(96)<br />
                         </code>
                     </td>
                 </tr>
@@ -295,7 +298,7 @@
                         <b>Decorators : </b>
                         <br />
                         <code>
-                            @IsString()<br />@IsOptional()<br />@MinLength(3)<br />@MaxLength(93)<br />
+                            @IsString()<br />@IsOptional()<br />@MinLength(3)<br />@MaxLength(96)<br />
                         </code>
                     </td>
                 </tr>
@@ -318,6 +321,7 @@
                             <span class="modifier"></span>
                             <span class="modifier"></span>
                             <span class="modifier"></span>
+                            <span class="modifier"></span>
                         <span ><b>password</b></span>
                         <a href="#password"><span class="icon ion-ios-link"></span></a>
                     </span>
@@ -334,7 +338,7 @@
                         <b>Decorators : </b>
                         <br />
                         <code>
-                            @IsString()<br />@IsNotEmpty()<br />@MinLength(8)<br />@Matches(/^(?&#x3D;.*[A-Za-z])(?&#x3D;.*\d)(?&#x3D;.*[@$!%*#?&amp;])[A-Za-z\d@$!%*#?&amp;]{8,}$/, {message: &#x27;Minimum eight characters, at least one letter, one number and one special character&#x27;})<br />
+                            @IsString()<br />@IsNotEmpty()<br />@MinLength(8)<br />@MaxLength(96)<br />@Matches(/^(?&#x3D;.*[A-Za-z])(?&#x3D;.*\d)(?&#x3D;.*[@$!%*#?&amp;])[A-Za-z\d@$!%*#?&amp;]{8,}$/, {message: &#x27;Minimum eight characters, at least one letter, one number and one special character&#x27;})<br />
                         </code>
                     </td>
                 </tr>
@@ -362,16 +366,16 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { IsEmail, IsNotEmpty, IsOptional, IsString, IsStrongPassword, MaxLength, MinLength, Matches } from &quot;class-validator&quot;;
 
 export class CreateUserDto{
-    @IsString() @IsNotEmpty() @MinLength(3) @MaxLength(93)
+    @IsString() @IsNotEmpty() @MinLength(3) @MaxLength(96)
     firstName: string;
 
-    @IsString() @IsOptional() @MinLength(3) @MaxLength(93)
+    @IsString() @IsOptional() @MinLength(3) @MaxLength(96)
     lastName: string;
 
-    @IsString() @IsNotEmpty() @IsEmail()
+    @IsString() @IsNotEmpty() @IsEmail() @MaxLength(96)
     email: string;
 
-    @IsString() @IsNotEmpty() @MinLength(8)
+    @IsString() @IsNotEmpty() @MinLength(8) @MaxLength(96)
     @Matches(/^(?&#x3D;.*[A-Za-z])(?&#x3D;.*\d)(?&#x3D;.*[@$!%*#?&amp;])[A-Za-z\d@$!%*#?&amp;]{8,}$/, {
         message:
           &#x27;Minimum eight characters, at least one letter, one number and one special character&#x27;,

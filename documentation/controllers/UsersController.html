@@ -154,6 +154,10 @@
                             </li>
                             <li>
                                     <span class="modifier"></span>
+                                    <span class="modifier"></span>
+                                    <span class="modifier"></span>
+                                    <span class="modifier"></span>
+                                    <span class="modifier"></span>
                                     <span class="modifier">Public</span>
                                 <a href="#getUsers" >getUsers</a>
                             </li>
@@ -209,8 +213,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="26"
-                                    class="link-to-prism">src/users/users.controller.ts:26</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="53"
+                                    class="link-to-prism">src/users/users.controller.ts:53</a></div>
                         </td>
                     </tr>
 
@@ -246,7 +250,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
 
                         </div>
                             <div class="io-description">
@@ -262,6 +266,10 @@
                 <td class="col-md-4">
                     <a name="getUsers"></a>
                     <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier"></span>
+                            <span class="modifier"></span>
+                            <span class="modifier"></span>
                             <span class="modifier"></span>
                             <span class="modifier">Public</span>
                         <span ><b>getUsers</b></span>
@@ -280,14 +288,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Get(&#x27;/:id?&#x27;)<br /></code>
+                    <code>@Get(&#x27;/:id?&#x27;)<br />@ApiOperation({summary: &#x27;Fetches a list of registered users on the application&#x27;})<br />@ApiResponse({status: 200, description: &#x27;Users fetched succefully based on the query&#x27;})<br />@ApiQuery({name: &#x27;limit&#x27;, type: &#x27;number&#x27;, required: false, description: &#x27;The number of entries returm per query&#x27;, example: 10})<br />@ApiQuery({name: &#x27;page&#x27;, type: &#x27;number&#x27;, required: false, description: &#x27;The position of the page number that you want the API to return&#x27;, example: 1})<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="18"
-                                    class="link-to-prism">src/users/users.controller.ts:18</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="45"
+                                    class="link-to-prism">src/users/users.controller.ts:45</a></div>
                         </td>
                     </tr>
 
@@ -387,8 +395,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="32"
-                                    class="link-to-prism">src/users/users.controller.ts:32</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="59"
+                                    class="link-to-prism">src/users/users.controller.ts:59</a></div>
                         </td>
                     </tr>
 
@@ -446,8 +454,10 @@ import { CreateUserDto } from &#x27;./dtos/create-user.dto&#x27;;
 import { GetUsersParamDto } from &#x27;./dtos/get-users-param.dto&#x27;;
 import { PatchUserDto } from &#x27;./dtos/patch-user.dto&#x27;;
 import { UsersService } from &#x27;./providers/users.service&#x27;;
+import {ApiOperation, ApiQuery, ApiResponse, ApiTags} from &#x27;@nestjs/swagger&#x27;;
 
 @Controller(&#x27;users&#x27;)
+@ApiTags(&#x27;Users&#x27;)
 export class UsersController {
     constructor(
         // Injecting Users Service
@@ -455,6 +465,31 @@ export class UsersController {
     ){}
 
     @Get(&#x27;/:id?&#x27;)
+    @ApiOperation({
+        summary: &#x27;Fetches a list of registered users on the application&#x27;
+    })
+    @ApiResponse({
+        status: 200,
+        description: &#x27;Users fetched succefully based on the query&#x27;,
+    })
+    @ApiQuery(
+        {
+            name: &#x27;limit&#x27;,
+            type: &#x27;number&#x27;,
+            required: false,
+            description: &#x27;The number of entries returm per query&#x27;,
+            example: 10
+        }
+    )
+    @ApiQuery(
+        {
+            name: &#x27;page&#x27;,
+            type: &#x27;number&#x27;,
+            required: false,
+            description: &#x27;The position of the page number that you want the API to return&#x27;,
+            example: 1
+        }
+    )
     public getUsers(
     @Param() getUsersParamDto: GetUsersParamDto, 
     @Query(&#x27;limit&#x27;,  new DefaultValuePipe(10), ParseIntPipe) limit: number,  
@@ -464,8 +499,8 @@ export class UsersController {
 
     @Post()
     public createUsers(@Body() createUserDto: CreateUserDto){
-        console.log(createUserDto instanceof CreateUserDto);
-        return &quot;You sent a post request to users endpoint&quot;;
+        
+        return this.usersService.createUser(createUserDto);
     }
 
     @Patch()

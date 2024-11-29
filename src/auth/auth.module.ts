@@ -8,6 +8,5 @@ import { AuthController } from './auth.controller';
   controllers: [AuthController],
   imports: [forwardRef(()=> UsersModule)],
   exports: [AuthService]
-  
 })
 export class AuthModule {}
