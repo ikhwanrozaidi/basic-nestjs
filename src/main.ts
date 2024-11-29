@@ -17,7 +17,7 @@ async function bootstrap() {
    * swagger configuration
    */
   const config = new DocumentBuilder()
-  .setTitle('NestJS MasteClass - Blog app API')
+  .setTitle('NestJS MasterClass - Blog app API')
   .setDescription('Use the base API URL as http://localhost:3000')
   .setTermsOfService('http://localhost:3000/service')
   .setLicense('MIT License', 'https://github.com/git/git-scm.com/blob/main/MIT-LICENSE.txt')

@@ -250,7 +250,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
 
                         </div>
                             <div class="io-description">
@@ -499,8 +499,8 @@ export class UsersController {
 
     @Post()
     public createUsers(@Body() createUserDto: CreateUserDto){
-        console.log(createUserDto instanceof CreateUserDto);
-        return &quot;You sent a post request to users endpoint&quot;;
+        
+        return this.usersService.createUser(createUserDto);
     }
 
     @Patch()

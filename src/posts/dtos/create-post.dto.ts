@@ -1,12 +1,12 @@
-import { IsArray, IsDate, IsEnum, IsISO8601, IsJSON, IsNotEmpty, IsOptional, IsString, IsUrl, Matches, MaxLength, MinLength, ValidateNested } from "class-validator";
+import { IsArray, IsDate, IsEnum, IsInt, IsISO8601, IsJSON, IsNotEmpty, IsOptional, IsString, IsUrl, Matches, MaxLength, MinLength, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 import { postStatus } from "../enum/postStatus.enum";
 import { postType } from "../enum/postType.enum";
-import { CreatePostMetaOptionsDto } from "./create-post-metaoptions.dto";
+import { CreatePostMetaOptionsDto } from "../../meta-options/dtos/create-post-metaoptions.dto";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CreatePostDto {
-    @IsString() @IsNotEmpty() @MinLength(4)
+    @IsString() @IsNotEmpty() @MinLength(4) @MaxLength(512)
     @ApiProperty({
         example: 'This is a title',
         description: 'This is the title for the blof posts'
@@ -20,7 +20,7 @@ export class CreatePostDto {
     })
     postType: postType;
 
-    @IsString() @IsNotEmpty() @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+    @IsString() @IsNotEmpty() @MaxLength(512) @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
         message:
           'A slug should be all small letters and uses only "-" and without spaces. For example "my-url"',
       })
@@ -51,7 +51,7 @@ export class CreatePostDto {
     })
     schema?: string;
 
-    @IsString() @IsUrl()
+    @IsString() @IsUrl() @MaxLength(1024)
     @ApiPropertyOptional({
         description: 'Featurted image for your blog posts',
         example: 'http://localhost.com/images/image1.jpg'
@@ -72,21 +72,28 @@ export class CreatePostDto {
     })
     tags?: string[];
 
-    @IsOptional() @IsArray() @ValidateNested({each:true}) @Type(()=> CreatePostMetaOptionsDto)
+    @IsOptional() @ValidateNested({each:true}) @Type(()=> CreatePostMetaOptionsDto)
     @ApiPropertyOptional({
-        type: 'array',
+        type: 'object',
         required: false,
         items: {
           type: 'object',
           properties: {
-            key: {
-              type: 'string',
-            },
-            value: {
-              type: 'string',
+            metaValue: {
+              type: 'json',
+              description: 'The metaValue is a JSON string',
+              example: '{sidebarEnaled: true}'
             },
           },
         },
       })
-    metaOptions?: CreatePostMetaOptionsDto[];
+    metaOptions?: CreatePostMetaOptionsDto | null;
+
+    @IsInt() @IsNotEmpty()
+    @ApiProperty({
+      type: 'integer',
+      required: true,
+      example: 1,
+    })
+    authorId: number;
 }
