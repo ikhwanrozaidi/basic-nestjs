@@ -286,8 +286,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="33"
-                                    class="link-to-prism">src/posts/providers/posts.service.ts:33</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="32"
+                                    class="link-to-prism">src/posts/providers/posts.service.ts:32</a></div>
                         </td>
                     </tr>
 
@@ -358,8 +358,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="58"
-                                    class="link-to-prism">src/posts/providers/posts.service.ts:58</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="57"
+                                    class="link-to-prism">src/posts/providers/posts.service.ts:57</a></div>
                         </td>
                     </tr>
 
@@ -428,8 +428,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="47"
-                                    class="link-to-prism">src/posts/providers/posts.service.ts:47</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="46"
+                                    class="link-to-prism">src/posts/providers/posts.service.ts:46</a></div>
                         </td>
                     </tr>
 
@@ -561,7 +561,6 @@ export class PostsService {
     /**
      * Creating new posts
      */
-
     public async create(@Body() createPostDto: CreatePostDto){
         // Find author from database based on authorId
         let author &#x3D; await this.usersService.findOnebyId(createPostDto.authorId);

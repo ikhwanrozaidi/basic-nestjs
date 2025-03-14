@@ -1,51 +1,66 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-
-@Entity()
-export class Tag{
+import { Post } from 'src/posts/post.entity';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+  
+  @Entity()
+  export class Tag {
     @PrimaryGeneratedColumn()
-    id: number;
-
+    id: string;
+  
     @Column({
-        type: 'varchar',
-        length: 256,
-        nullable: false,
-        unique: true,
+      type: 'varchar',
+      length: 256,
+      nullable: false,
+      unique: true,
     })
     name: string;
-
+  
     @Column({
-        type: 'varchar',
-        length: 256,
-        nullable: false,
-        unique: true,
+      type: 'varchar',
+      length: 512,
+      nullable: false,
+      unique: true,
     })
     slug: string;
-
+  
     @Column({
-        type: 'text',
-        nullable: true,
+      type: 'text',
+      nullable: true,
     })
-    description?: string;
-
+    description: string;
+  
     @Column({
-        type: 'text',
-        nullable: true,
+      type: 'text',
+      nullable: true,
     })
-    schema?: string;
-
+    schema: string;
+  
     @Column({
-        type: 'varchar',
-        length: 1024,
-        nullable: true,
+      type: 'varchar',
+      length: 1024,
+      nullable: true,
     })
-    featuredImageUrl?: string;
+    featuredImage: string;
 
+    @ManyToMany(()=> Post, (post)=> [post.tags], {
+      onDelete: 'CASCADE',
+    })
+    posts: Post[]
+  
     @CreateDateColumn()
     createDate: Date;
-
+  
     @UpdateDateColumn()
     updateDate: Date;
-
+    
     @DeleteDateColumn()
     deletedAt: Date;
-}
+  }
+  

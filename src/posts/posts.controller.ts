@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
-import { PostsService } from './providers/posts.service';
-import {ApiOperation, ApiResponse, ApiTags} from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePostDto } from './dtos/create-post.dto';
-import { patchPostsDto } from './dtos/patch-post.dto';
+import { PatchPostsDto } from './dtos/patch-post.dto';
+import { PostsService } from './providers/posts.service';
 
 @Controller('posts')
 @ApiTags('Posts')
@@ -40,8 +40,8 @@ export class PostsController {
         description:
           'You get a success 200 response if the post is updated successfully',
     })
-    public updatePosts(@Body() patchPostsDto: patchPostsDto){
-        console.log(patchPostsDto)
+    public updatePosts(@Body() patchPostsDto: PatchPostsDto){
+        return this.postsService.update(patchPostsDto);
 
     }
 

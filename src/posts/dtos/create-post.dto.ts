@@ -1,9 +1,9 @@
-import { IsArray, IsDate, IsEnum, IsInt, IsISO8601, IsJSON, IsNotEmpty, IsOptional, IsString, IsUrl, Matches, MaxLength, MinLength, ValidateNested } from "class-validator";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Type } from "class-transformer";
+import { IsArray, IsEnum, IsInt, IsISO8601, IsJSON, IsNotEmpty, IsOptional, IsString, IsUrl, Matches, MaxLength, MinLength, ValidateNested } from "class-validator";
+import { CreatePostMetaOptionsDto } from "../../meta-options/dtos/create-post-metaoptions.dto";
 import { postStatus } from "../enum/postStatus.enum";
 import { postType } from "../enum/postType.enum";
-import { CreatePostMetaOptionsDto } from "../../meta-options/dtos/create-post-metaoptions.dto";
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CreatePostDto {
     @IsString() @IsNotEmpty() @MinLength(4) @MaxLength(512)
@@ -65,12 +65,12 @@ export class CreatePostDto {
       })
     publishOn?: Date;
 
-    @IsOptional() @IsArray() @IsString({ each: true }) @MinLength(3, {each: true})
+    @IsOptional() @IsArray() @IsInt({ each: true })
     @ApiPropertyOptional({
-        description: 'Array of tags passed as string values',
-        example: ['nestjs', 'typescript']
+        description: 'Array of id of tags',
+        example: ['1', '2']
     })
-    tags?: string[];
+    tags?: number[];
 
     @IsOptional() @ValidateNested({each:true}) @Type(()=> CreatePostMetaOptionsDto)
     @ApiPropertyOptional({
