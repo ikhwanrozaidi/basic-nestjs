@@ -1,10 +1,12 @@
-import { Injectable, Inject, forwardRef } from "@nestjs/common";
-import { GetUsersParamDto } from "../dtos/get-users-param.dto";
+import { Inject, Injectable, forwardRef } from "@nestjs/common";
+import { ConfigService, ConfigType } from "@nestjs/config";
+import { InjectRepository } from "@nestjs/typeorm";
 import { AuthService } from "src/auth/providers/auth.service";
 import { Repository } from "typeorm";
-import { User } from "../user.entity";
-import { InjectRepository } from "@nestjs/typeorm";
+import profileConfig from "../config/profile.config";
 import { CreateUserDto } from "../dtos/create-user.dto";
+import { GetUsersParamDto } from "../dtos/get-users-param.dto";
+import { User } from "../user.entity";
 
 /**
  * Class to connect to Users table and perform business operation
@@ -20,7 +22,14 @@ export class UsersService {
          * Injecting userRepository
          */
         @InjectRepository(User)
-        private usersRepository: Repository<User>
+        private usersRepository: Repository<User>,
+
+        // Injecting ConfigService
+        private readonly configService: ConfigService,
+
+        // Injecting profileConfig
+        @Inject(profileConfig.KEY)
+        private readonly profileConfiguration: ConfigType<typeof profileConfig>,
     ){}
 
     public async createUser (createUserDto: CreateUserDto){
@@ -42,8 +51,13 @@ export class UsersService {
      */
     public findAll(getUsersParamDto: GetUsersParamDto, limit: number, page: number
     ){
-    const isAuth = this.authService.isAuth();
-    console.log(isAuth);
+    // // get an environment variable
+    // const environment = this.configService.get<string>('S3_BUCKET');
+    // console.log(environment);
+
+    //test the new config
+    console.log(this.profileConfiguration);
+    
         return [
             {
                 firstName: "John",

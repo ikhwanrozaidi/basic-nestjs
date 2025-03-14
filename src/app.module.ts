@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -8,24 +9,40 @@ import { PostsModule } from './posts/posts.module';
 import { TagsModule } from './tags/tags.module';
 import { UsersModule } from './users/users.module';
 
+import appConfig from './config/app.config';
+import databaseConfig from './config/database.config';
+import environmentValidation from './config/environment.validation';
+
+// Get the current NODE_ENV
+const ENV = process.env.NODE_ENV;
 @Module({
-  imports: [UsersModule, PostsModule, AuthModule, 
+  imports: [UsersModule, PostsModule, AuthModule,
+
+    ConfigModule.forRoot({
+      isGlobal: true,
+      //envFilePath: ['.env.development', '.env'],
+      envFilePath: !ENV ? '.env' : `.env.${ENV}`,
+      load: [appConfig, databaseConfig],
+      validationSchema: environmentValidation
+    }),
 
     TypeOrmModule.forRootAsync({
-      imports: [],
-      inject: [],
-      useFactory: ()=> ({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        // entities: [User, Post, Tag],
-        autoLoadEntities: true,
-        synchronize: true,
-        port: 5432,
-        username: 'postgres',
-        password: 'hoisystem',
-        host: 'localhost',
-        database: 'nestjs-blog'
+        //entities: [User],
+        synchronize: configService.get('database.synchronize'),
+        port: configService.get('database.port'),
+        username: configService.get('database.user'),
+        password: configService.get('database.password'),
+        host: configService.get('database.host'),
+        autoLoadEntities: configService.get('database.autoLoadEntities'),
+        database: configService.get('database.name'),
       }),
-    }), TagsModule, MetaOptionsModule
+    }),
+    TagsModule, 
+    MetaOptionsModule,
 
   ],
   controllers: [AppController],
