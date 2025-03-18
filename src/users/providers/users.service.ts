@@ -8,6 +8,8 @@ import { CreateManyUsersDto } from "../dtos/create-many-users.dto";
 import { CreateUserDto } from "../dtos/create-user.dto";
 import { GetUsersParamDto } from "../dtos/get-users-param.dto";
 import { User } from "../user.entity";
+import { CreateUserProvider } from "./create-user.provider";
+import { FindOneUserByEmailProvider } from "./find-one-user-by-email.provider";
 import { UsersCreateManyProvider } from "./users-create-many.provider";
 
 /**
@@ -26,10 +28,14 @@ export class UsersService {
         @InjectRepository(User)
         private usersRepository: Repository<User>,
 
-        // Injecting ConfigService
+        /**
+         * Inject the ConfigService
+         */
         private readonly configService: ConfigService,
 
-        // Injecting profileConfig
+        /**
+         * Inject the profileConfig
+         */
         @Inject(profileConfig.KEY)
         private readonly profileConfiguration: ConfigType<typeof profileConfig>,
 
@@ -42,54 +48,23 @@ export class UsersService {
          * Inject UsersCreateMany provider
          */
         private readonly usersCreateManyProvider: UsersCreateManyProvider,
+
+        /**
+         * Inject create users provider
+         */
+        private readonly createUserProvider: CreateUserProvider,
+
+        /**
+         * Inject findOneUserByEmailProvider
+         */
+        private readonly findOneUserByEmailProvider: FindOneUserByEmailProvider,
     ){}
 
-    public async createUser(createUserDto: CreateUserDto) {
-        let existingUser = undefined;
-    
-        try {
-          // Check if user with email exists
-          existingUser = await this.usersRepository.findOne({
-            where: { email: createUserDto.email },
-          });
-
-        } catch (error) {
-          throw new RequestTimeoutException(
-            'Unable to process your request at the moment please try later',
-            {
-              description: 'Error connecting to database',
-            },
-          );
-        }
-    
-        /**
-         * Handle exceptions if user exists later
-         * */
-        if (existingUser) {
-          throw new BadRequestException(
-            'The user already exists, please check your email',
-          );
-        }
-    
-        let newUser = this.usersRepository.create(createUserDto);
-
-        try {
-        newUser = await this.usersRepository.save(newUser);
-        } catch (error) {
-        throw new RequestTimeoutException(
-            'Unable to process your request at the moment please try later',
-            {
-            description: 'Error connecting to database',
-            },
-        );
-        }
-
-        return newUser;
+    public async createUser(createUserDto: CreateUserDto){
+      return this.createUserProvider.createUser(createUserDto);
     }
 
-    /**
-     * Public method responsible for handling GET request for '/users' endpoint
-     */
+    // Public method responsible for handling GET request for '/users' endpoint
     public findAll(
         getUserParamDto: GetUsersParamDto,
         limt: number,
@@ -114,9 +89,7 @@ export class UsersService {
         }
     }
 
-    /**
-     * Public method used to find one user using the ID of the user
-     */
+    // Public method used to find one user using the ID of the user
     public async findOneById(id: number) {
       let user = undefined;
 
@@ -134,9 +107,7 @@ export class UsersService {
           );
       }
 
-      /**
-       * Handle the user does not exist
-       */
+      // Handle the user does not exist       
       if(!user){
           throw new BadRequestException('The user id does not exist');
       }
@@ -146,5 +117,10 @@ export class UsersService {
 
     public async createMany(createManyUsersDto: CreateManyUsersDto) {
       return await this.usersCreateManyProvider.createMany(createManyUsersDto);
+    }
+
+    // Finds one user by email
+    public async findOneByEmail(email: string) {
+      return await this.findOneUserByEmailProvider.findOneByEmail(email);
     }
 }
