@@ -1,99 +1,125 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import { IsArray, IsEnum, IsInt, IsISO8601, IsJSON, IsNotEmpty, IsOptional, IsString, IsUrl, Matches, MaxLength, MinLength, ValidateNested } from "class-validator";
-import { CreatePostMetaOptionsDto } from "../../meta-options/dtos/create-post-metaoptions.dto";
-import { postStatus } from "../enum/postStatus.enum";
-import { postType } from "../enum/postType.enum";
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsDate,
+  IsEnum,
+  IsInt,
+  IsJSON,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Matches,
+  MaxLength,
+  MinLength,
+  ValidateNested
+} from 'class-validator';
+
+import { Type } from 'class-transformer';
+import { CreatePostMetaOptionsDto } from 'src/meta-options/dtos/create-post-metaoptions.dto';
+import { postStatus } from '../enum/postStatus.enum';
+import { postType } from '../enum/postType.enum';
 
 export class CreatePostDto {
-    @IsString() @IsNotEmpty() @MinLength(4) @MaxLength(512)
-    @ApiProperty({
-        example: 'This is a title',
-        description: 'This is the title for the blof posts'
-    })
-    title: string;
+  @ApiProperty({
+    example: 'This is a title',
+    description: 'This is the title for the blog post',
+  })
+  @IsString()
+  @MinLength(4)
+  @MaxLength(512)
+  @IsNotEmpty()
+  title: string;
 
-    @IsEnum(postType) @IsNotEmpty()
-    @ApiProperty({
-        enum: postType,
-        description: "Possible values, 'post', 'page', 'story', 'series'"
-    })
-    postType: postType;
+  @ApiProperty({
+    enum: postType,
+    description: "Possible values, 'post', 'page', 'story', 'series'",
+  })
+  @IsEnum(postType)
+  @IsNotEmpty()
+  postType: postType;
 
-    @IsString() @IsNotEmpty() @MaxLength(512) @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
-        message:
-          'A slug should be all small letters and uses only "-" and without spaces. For example "my-url"',
-      })
-    @ApiProperty({
-            description: "For example - 'my-url'",
-            example: 'my-blog-post'
-    })
-    slug: string;
+  @ApiProperty({
+    description: "For Example - 'my-url'",
+    example: 'my-blog-post',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+    message:
+      'A slug should be all small letters and uses only "-" and without spaces. For example "my-url"',
+  })
+  @MaxLength(256)
+  slug: string;
 
-    @IsEnum(postStatus) @IsNotEmpty()
-    @ApiProperty({
-        enum: postStatus,
-        description: "Possible values 'draft', 'scheduled', 'review', 'published'"
-    })
-    status: postStatus;
+  @ApiProperty({
+    enum: postStatus,
+    description: "Possible values 'draft', 'scheduled', 'review', 'published'",
+  })
+  @IsEnum(postStatus)
+  @IsNotEmpty()
+  status: postStatus;
 
-    @IsString() @IsOptional()
-    @ApiPropertyOptional({
-        description: 'This is the content of the post',
-        example: 'The post content'
-    })
-    content?: string;
+  @ApiPropertyOptional({
+    description: 'This is the content of the post',
+    example: 'The post content',
+  })
+  @IsString()
+  @IsOptional()
+  content?: string;
 
-    @IsOptional() @IsJSON()
-    @ApiPropertyOptional({
-        description:
-          'Serialize your JSON object else a validation error will be thrown',
-    })
-    schema?: string;
+  @ApiPropertyOptional({
+    description:
+      'Serialize your JSON object else a validation error will be thrown',
+    example:
+      '{\r\n "@context": "https://schema.org",\r\n "@type": "Person"\r\n }',
+  })
+  @IsOptional()
+  @IsJSON()
+  schema?: string;
 
-    @IsString() @IsUrl() @MaxLength(1024)
-    @ApiPropertyOptional({
-        description: 'Featurted image for your blog posts',
-        example: 'http://localhost.com/images/image1.jpg'
-    })
-    featuredImageUrl?: string;
+  @ApiPropertyOptional({
+    description: 'Featured image for your blog post',
+    example: 'http://localhost.com/images/image1.jpg',
+  })
+  @IsOptional()
+  @IsUrl()
+  @MaxLength(1024)
+  featuredImageUrl?: string;
 
-    @IsISO8601() @IsOptional()
-    @ApiProperty({
-        description: 'Must be a valid timestamp in ISO8601',
-        example: '2024-03-16T07:46:32+0000',
-      })
-    publishOn?: Date;
+  @ApiPropertyOptional({
+    description: 'The date on which the blog post is published',
+    example: '2024-03-16T07:46:32+0000',
+  })
+  @IsDate()
+  @IsOptional()
+  publishOn?: Date;
 
-    @IsOptional() @IsArray() @IsInt({ each: true })
-    @ApiPropertyOptional({
-        description: 'Array of id of tags',
-        example: ['1', '2']
-    })
-    tags?: number[];
+  @ApiPropertyOptional({
+    description: 'Array of ids of tags',
+    example: [1, 2],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsInt({ each: true })
+  tags?: number[];
 
-    @IsOptional() @ValidateNested({each:true}) @Type(()=> CreatePostMetaOptionsDto)
-    @ApiPropertyOptional({
-        type: 'object',
-        required: false,
-        items: {
-          type: 'object',
-          properties: {
-            metaValue: {
-              type: 'json',
-              description: 'The metaValue is a JSON string',
-              example: '{sidebarEnaled: true}'
-            },
-          },
+  @ApiPropertyOptional({
+    type: 'object',
+    required: false,
+    items: {
+      type: 'object',
+      properties: {
+        metavalue: {
+          type: 'json',
+          description: 'The metaValue is a JSON string',
+          example: '{"sidebarEnabled": true}',
         },
-      })
-    metaOptions?: CreatePostMetaOptionsDto | null;
-
-    @IsInt() @IsNotEmpty()
-    @ApiProperty({
-      type: 'integer',
-      required: true,
-      example: 1,
-    })
-    authorId: number;
+      },
+    },
+  })
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => CreatePostMetaOptionsDto)
+  metaOptions?: CreatePostMetaOptionsDto | null;
 }

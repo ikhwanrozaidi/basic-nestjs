@@ -1,15 +1,16 @@
 import {
-    Inject,
-    Injectable,
-    RequestTimeoutException,
-    UnauthorizedException,
-    forwardRef,
+  Inject,
+  Injectable,
+  RequestTimeoutException,
+  UnauthorizedException,
+  forwardRef,
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/providers/users.service';
 import jwtConfig from '../config/jwt.config';
 import { SignInDto } from '../dtos/signin.dto';
+import { ActiveUserData } from '../interfaces/active-user-interfaces';
 import { HashingProvider } from './hashing.provider';
   
   @Injectable()
@@ -65,7 +66,7 @@ import { HashingProvider } from './hashing.provider';
         {
           sub: user.id,
           email: user.email,
-        },
+        } as ActiveUserData,
         {
           audience: this.jwtConfiguration.audience,
           issuer: this.jwtConfiguration.issuer,
