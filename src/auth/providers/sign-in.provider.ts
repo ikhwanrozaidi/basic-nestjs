@@ -5,12 +5,9 @@ import {
   UnauthorizedException,
   forwardRef,
 } from '@nestjs/common';
-import { ConfigType } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/providers/users.service';
-import jwtConfig from '../config/jwt.config';
 import { SignInDto } from '../dtos/signin.dto';
-import { ActiveUserData } from '../interfaces/active-user-interfaces';
+import { GenerateTokensProvider } from './generate-tokens.provider';
 import { HashingProvider } from './hashing.provider';
   
   @Injectable()
@@ -26,27 +23,23 @@ import { HashingProvider } from './hashing.provider';
        * Inject the hashingProvider
        */
       private readonly hashingProvider: HashingProvider,
-  
+
       /**
-       * Inject jwtService
+       * Inject generateTokensProvider
        */
-      private readonly jwtService: JwtService,
-  
-      /**
-       * Inject jwtConfiguration
-       */
-      @Inject(jwtConfig.KEY)
-      private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
+      private readonly generateTokensProvider: GenerateTokensProvider,
     ) {}
   
     public async signIn(signInDto: SignInDto) {
-      // Find user by email ID
-      // Throw exception if user is not found
+      // find user by email ID
       let user = await this.usersService.findOneByEmail(signInDto.email);
+      // Throw exception if user is not found
+      // Above | Taken care by the findInByEmail method
   
       let isEqual: boolean = false;
   
       try {
+        // Compare the password to hash
         isEqual = await this.hashingProvider.comparePassword(
           signInDto.password,
           user.password,
@@ -62,22 +55,7 @@ import { HashingProvider } from './hashing.provider';
       }
   
       // Generate access token
-      const accessToken = await this.jwtService.signAsync(
-        {
-          sub: user.id,
-          email: user.email,
-        } as ActiveUserData,
-        {
-          audience: this.jwtConfiguration.audience,
-          issuer: this.jwtConfiguration.issuer,
-          secret: this.jwtConfiguration.secret,
-          expiresIn: this.jwtConfiguration.accessTokenTtl,
-        },
-      );
-
-      return {
-        accessToken,
-      };
+      return await this.generateTokensProvider.generateTokens(user);
     }
   }
   
